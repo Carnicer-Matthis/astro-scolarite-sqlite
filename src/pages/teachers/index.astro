@@ -1,0 +1,40 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { Database } from "bun:sqlite";
+
+// Connexion à la base de données
+const dbPath = import.meta.env.SQLITE_DB_PATH || "./data/scolarite.sqlite";
+const db = new Database(dbPath);
+
+// 1. On définit la "forme" d'un professeur pour TypeScript
+type Teacher = {
+    first_name: string;
+    last_name: string;
+    specialty: string;
+};
+
+// 2. On précise que le résultat de la requête est un tableau de "Teacher"
+const teachers = db.query("SELECT * FROM teachers").all() as Teacher[];
+---
+
+<Layout title="Liste des professeurs">
+    <main class="container">
+        <h1>Liste des enseignants</h1>
+
+        <ul>
+            {
+                teachers.map((teacher) => (
+                    <li>
+                        <strong>
+                            {teacher.first_name} {teacher.last_name}
+                        </strong>{" "}
+                        — {teacher.specialty}
+                    </li>
+                ))
+            }
+        </ul>
+
+        <br />
+        <a href="/">Retour à l'accueil</a>
+    </main>
+</Layout>

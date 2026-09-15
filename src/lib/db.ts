@@ -1,0 +1,10 @@
+import { Database } from "bun:sqlite";
+import { mkdirSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+const path = resolve(import.meta.env.SQLITE_DB_PATH || "./data/scolarite.sqlite");
+mkdirSync(dirname(path), { recursive: true });
+console.log('PATH:', import.meta.env.SQLITE_DB_PATH);
+const db = new Database(path);
+db.exec("PRAGMA foreign_keys = ON;");
+db.exec("PRAGMA journal_mode = WAL;");
+export default db;
