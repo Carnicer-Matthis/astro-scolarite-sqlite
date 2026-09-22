@@ -34,7 +34,7 @@ jobs:
             echo "Vérification du service..."
             sudo -n systemctl is-active --quiet scolarite
             echo "Health check..."
-            curl --fail --show-error --silent http://127.0.0.1:3000/
+            curl --fail --show-error --silent http://127.0.0.1:4321/
             echo "======================================"
             echo "Déploiement terminé"
             echo "======================================"
