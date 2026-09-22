@@ -4,12 +4,17 @@ on:
   push:
     branches:
       - main
+
   workflow_dispatch:
 
 jobs:
+
   deploy:
+
     runs-on: ubuntu-latest
+
     steps:
+
       - name: Deploy on Ubuntu server
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -17,24 +22,34 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
+
           script: |
             set -e
+
             echo "======================================"
             echo "Début du déploiement"
             echo "======================================"
+
             cd /var/www/scolarite/astro-scolarite-sqlite
+
             echo "Mise à jour du code..."
-            git pull origin main
+            git pull origin
+            
             echo "Installation des dépendances..."
-            /home/etudiant/.bun/bin/bun ci
+            bun ci
+
             echo "Compilation Astro..."
-            /home/etudiant/.bun/bin/bun run --bun build
+            bun run --bun build
+
             echo "Redémarrage de l'application..."
-            sudo -n systemctl restart scolarite
+            sudo systemctl restart scolarite
+
             echo "Vérification du service..."
-            sudo -n systemctl is-active --quiet scolarite
+            sudo systemctl is-active --quiet scolarite
+
             echo "Health check..."
-            curl --fail --show-error --silent http://127.0.0.1:4321/
+            curl --fail http://127.0.0.1:3000/
+
             echo "======================================"
             echo "Déploiement terminé"
             echo "======================================"
