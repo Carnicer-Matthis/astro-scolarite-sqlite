@@ -33,7 +33,7 @@ jobs:
             cd /var/www/scolarite/astro-scolarite-sqlite
 
             echo "Mise à jour du code..."
-            git pull origin
+            git pull origin main
             
             echo "Installation des dépendances..."
             /home/etudiant/.bun/bin/bun ci
@@ -42,13 +42,16 @@ jobs:
             /home/etudiant/.bun/bin/bun run --bun build
 
             echo "Redémarrage de l'application..."
-            sudo systemctl restart scolarite
+            sudo -n systemctl restart scolarite
 
             echo "Vérification du service..."
-            sudo systemctl is-active --quiet scolarite
+            sudo -n systemctl is-active --quiet scolarite
+
+            echo "Attente du démarrage du serveur..."
+            sleep 5
 
             echo "Health check..."
-            curl --fail http://127.0.0.1:3000/
+            curl --fail --show-error --silent http://127.0.0.1:3000/
 
             echo "======================================"
             echo "Déploiement terminé"
